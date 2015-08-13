@@ -1,6 +1,7 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from rest_api.models import Spot, Tip, Review, Photo
+from rest_api.models import Spot, Tip, Review, Photo, Favorite, ParkingLocation
 
 
 class DynamicFieldsHLModelSerializer(serializers.HyperlinkedModelSerializer):
@@ -22,6 +23,32 @@ class DynamicFieldsHLModelSerializer(serializers.HyperlinkedModelSerializer):
             existing = set(self.fields.keys())
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
+
+
+
+class UserSerializer(DynamicFieldsHLModelSerializer):
+
+    password = serializers.CharField(
+        style={'input_type': 'password'}, write_only=True
+    )
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name')
+
+
+    def create(self, validated_data):
+        user = User.objects.create(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name']
+        )
+
+        user.set_password(validated_data['password'])
+        user.save()
+
+        return user
 
 
 class TipSerializer(DynamicFieldsHLModelSerializer):
@@ -69,6 +96,24 @@ class ReviewSerializer(DynamicFieldsHLModelSerializer):
         )
 
 
+class ParkingLocationSerializer(GeoFeatureModelSerializer):
+
+    spot = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = ParkingLocation
+        geo_field = "location"
+        fields = (
+            "spot",
+            "location",
+            "description",
+            "created_at",
+        )
+        read_only_fields = (
+            "spot",
+            "created_at",
+        )
+
 class SpotSerializer(GeoFeatureModelSerializer):
 
     tips = TipSerializer(many=True, read_only=True, fields=("tip", "created_at"))
@@ -81,6 +126,15 @@ class SpotSerializer(GeoFeatureModelSerializer):
         view_name="photo-detail",
         lookup_field="pk"
     )
+
+    parking_locations = ParkingLocationSerializer(many=True, read_only=True)
+
+    # parking_locations = serializers.HyperlinkedRelatedField(
+    #     many=True,
+    #     read_only=True,
+    #     view_name="parking-location-detail",
+    #     lookup_field="pk"
+    # )
 
     class Meta:
         model = Spot
@@ -98,6 +152,7 @@ class SpotSerializer(GeoFeatureModelSerializer):
             "additional_photos",
             "tips",
             "reviews",
+            "parking_locations",
         )
 
 
@@ -118,3 +173,18 @@ class PhotoSerializer(serializers.HyperlinkedModelSerializer):
             "spot",
             "created_at",
         )
+
+class FavoriteSerializer(DynamicFieldsHLModelSerializer):
+
+    spot = SpotSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Favorite
+        fields = (
+            "id",
+            "user",
+            "spot",
+            "created_at",
+        )
+

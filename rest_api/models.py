@@ -42,7 +42,7 @@ class Spot(models.Model):
     DANGER_LEVEL_CHOICES = [(i,i) for i in range(1, 11)]
     SKILL_LEVEL_CHOICES = [(i,i) for i in range(1, 11)]
 
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(User, related_name="spots", null=True)
     primary_photo = models.FileField(upload_to="primary-photos/", null=True)
     title = models.CharField(max_length=250, null=True)
     description = models.CharField(max_length=1000, null=True)
@@ -66,7 +66,7 @@ class Spot(models.Model):
 
 
 class ParkingLocation(models.Model):
-    spot = models.ForeignKey(Spot, null=True)
+    spot = models.ForeignKey(Spot, related_name="parking_locations", null=True)
     location = PointField(null=True)
     description = models.CharField(max_length=500, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True, null=True)
@@ -91,4 +91,10 @@ class Tip(models.Model):
     spot = models.ForeignKey(Spot, related_name="tips", null=True)
     author = models.ForeignKey(User, related_name="tips", null=True)
     tip = models.CharField(max_length=750, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True, null=True)
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, related_name="favorites", null=True)
+    spot = models.ForeignKey(Spot, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True, null=True)
