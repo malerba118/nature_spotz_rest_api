@@ -30,7 +30,14 @@ class UserSerializer(DynamicFieldsSerializerMixin, serializers.HyperlinkedModelS
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name')
+        fields = (
+            'id',
+            'username',
+            'password',
+            'email',
+            'first_name',
+            'last_name'
+        )
 
 
     def create(self, validated_data):
@@ -100,12 +107,14 @@ class ParkingLocationSerializer(DynamicFieldsSerializerMixin, GeoFeatureModelSer
         model = ParkingLocation
         geo_field = "location"
         fields = (
+            "id",
             "spot",
             "location",
             "description",
             "created_at",
         )
         read_only_fields = (
+            "id",
             "spot",
             "created_at",
         )
@@ -178,6 +187,12 @@ class FavoriteSerializer(DynamicFieldsSerializerMixin, serializers.HyperlinkedMo
     class Meta:
         model = Favorite
         fields = (
+            "id",
+            "user",
+            "spot",
+            "created_at",
+        )
+        read_only_fields = (
             "id",
             "user",
             "spot",
