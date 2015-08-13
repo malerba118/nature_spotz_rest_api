@@ -4,8 +4,10 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from rest_framework import status
+from rest_framework.decorators import detail_route
 from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveDestroyAPIView, \
     RetrieveAPIView, CreateAPIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, FileUploadParser
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -17,6 +19,27 @@ from rest_api.models import Spot, Tip, Review, Photo, Favorite, ParkingLocation
 from rest_api.permissions import IsOwner
 from rest_api.serializers import SpotSerializer, TipSerializer, ReviewSerializer, PhotoSerializer, UserSerializer, \
     FavoriteSerializer, ParkingLocationSerializer
+
+
+class DynamicFieldsViewMixin(object):
+
+     def get_serializer(self, *args, **kwargs):
+
+        serializer_class = self.get_serializer_class()
+
+        fields = None
+        if self.request.method == 'GET':
+            query_fields = self.request.QUERY_PARAMS.get("fields", None)
+
+            if query_fields:
+                fields = tuple(query_fields.split(','))
+
+
+        kwargs['context'] = self.get_serializer_context()
+        kwargs['fields'] = fields
+
+        return serializer_class(*args, **kwargs)
+
 
 
 class UserList(ListCreateAPIView):
@@ -31,7 +54,7 @@ class UserDetail(RetrieveAPIView):
 
 
 
-class SpotList(ListCreateAPIView):
+class SpotList(DynamicFieldsViewMixin, ListCreateAPIView):
 
     queryset = Spot.objects.all()
     serializer_class = SpotSerializer
@@ -54,6 +77,7 @@ class SpotList(ListCreateAPIView):
 
 
 
+
 class SpotDetail(RetrieveUpdateDestroyAPIView):
     queryset = Spot.objects.all()
     serializer_class = SpotSerializer
@@ -66,22 +90,19 @@ class TipDetail(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
-class TipList(APIView):
+
+class TipList(DynamicFieldsViewMixin, ListCreateAPIView):
+    queryset = Tip.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    serializer_class = TipSerializer
 
-    def get(self, request, pk):
-        spot = get_object_or_404(Spot, pk=pk)
-        tips = spot.tips
-        serializer = TipSerializer(tips, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        spot = get_object_or_404(Spot, pk=self.kwargs["pk"])
+        return Tip.objects.filter(spot=spot)
 
-    def post(self, request, pk, format=None):
-        spot = get_object_or_404(Spot, pk=pk)
-        serializer = TipSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(spot=spot, author=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, spot=get_object_or_404(Spot, pk=self.kwargs["pk"]))
+
 
 
 class ReviewDetail(RetrieveUpdateDestroyAPIView):
@@ -134,6 +155,7 @@ class PhotoList(APIView):
             serializer.save(spot=spot)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class UserFavoriteList(APIView):

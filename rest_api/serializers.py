@@ -4,18 +4,15 @@ from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from rest_api.models import Spot, Tip, Review, Photo, Favorite, ParkingLocation
 
 
-class DynamicFieldsHLModelSerializer(serializers.HyperlinkedModelSerializer):
-    """
-    A ModelSerializer that takes an additional `fields` argument that
-    controls which fields should be displayed.
-    """
+
+class DynamicFieldsSerializerMixin(object):
 
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass
         fields = kwargs.pop('fields', None)
 
         # Instantiate the superclass normally
-        super(DynamicFieldsHLModelSerializer, self).__init__(*args, **kwargs)
+        super(DynamicFieldsSerializerMixin, self).__init__(*args, **kwargs)
 
         if fields is not None:
             # Drop any fields that are not specified in the `fields` argument.
@@ -25,8 +22,7 @@ class DynamicFieldsHLModelSerializer(serializers.HyperlinkedModelSerializer):
                 self.fields.pop(field_name)
 
 
-
-class UserSerializer(DynamicFieldsHLModelSerializer):
+class UserSerializer(DynamicFieldsSerializerMixin, serializers.HyperlinkedModelSerializer):
 
     password = serializers.CharField(
         style={'input_type': 'password'}, write_only=True
@@ -51,7 +47,7 @@ class UserSerializer(DynamicFieldsHLModelSerializer):
         return user
 
 
-class TipSerializer(DynamicFieldsHLModelSerializer):
+class TipSerializer(DynamicFieldsSerializerMixin, serializers.HyperlinkedModelSerializer):
 
     spot = serializers.PrimaryKeyRelatedField(read_only=True)
     author = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -73,7 +69,7 @@ class TipSerializer(DynamicFieldsHLModelSerializer):
         )
 
 
-class ReviewSerializer(DynamicFieldsHLModelSerializer):
+class ReviewSerializer(DynamicFieldsSerializerMixin, serializers.HyperlinkedModelSerializer):
 
     spot = serializers.PrimaryKeyRelatedField(read_only=True)
     author = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -96,7 +92,7 @@ class ReviewSerializer(DynamicFieldsHLModelSerializer):
         )
 
 
-class ParkingLocationSerializer(GeoFeatureModelSerializer):
+class ParkingLocationSerializer(DynamicFieldsSerializerMixin, GeoFeatureModelSerializer):
 
     spot = serializers.PrimaryKeyRelatedField(read_only=True)
 
@@ -114,7 +110,7 @@ class ParkingLocationSerializer(GeoFeatureModelSerializer):
             "created_at",
         )
 
-class SpotSerializer(GeoFeatureModelSerializer):
+class SpotSerializer(DynamicFieldsSerializerMixin, GeoFeatureModelSerializer):
 
     tips = TipSerializer(many=True, read_only=True, fields=("tip", "created_at"))
 
@@ -156,7 +152,7 @@ class SpotSerializer(GeoFeatureModelSerializer):
         )
 
 
-class PhotoSerializer(serializers.HyperlinkedModelSerializer):
+class PhotoSerializer(DynamicFieldsSerializerMixin, serializers.HyperlinkedModelSerializer):
 
     spot = serializers.PrimaryKeyRelatedField(read_only=True)
 
@@ -174,7 +170,7 @@ class PhotoSerializer(serializers.HyperlinkedModelSerializer):
             "created_at",
         )
 
-class FavoriteSerializer(DynamicFieldsHLModelSerializer):
+class FavoriteSerializer(DynamicFieldsSerializerMixin, serializers.HyperlinkedModelSerializer):
 
     spot = SpotSerializer(read_only=True)
     user = UserSerializer(read_only=True)
