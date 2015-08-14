@@ -1,21 +1,15 @@
 from django.contrib.auth.models import User
-from django.contrib.gis.geos import Point
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
-from rest_framework import status
-from rest_framework.decorators import detail_route
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveDestroyAPIView, \
-    RetrieveAPIView, CreateAPIView
-from rest_framework.pagination import PageNumberPagination
+    RetrieveAPIView
 from rest_framework.parsers import FormParser, FileUploadParser
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_gis.filters import DistanceToPointFilter
-from rest_api.filters import DistanceFilter
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_api.filters import DistanceFilter, SpotFilter, UserFavoriteFilter, UserReviewFilter
 from rest_api.models import Spot, Tip, Review, Photo, Favorite, ParkingLocation
 from rest_api.permissions import IsOwner
 from rest_api.serializers import SpotSerializer, TipSerializer, ReviewSerializer, PhotoSerializer, UserSerializer, \
@@ -56,10 +50,13 @@ class UserDetail(DynamicFieldsViewMixin, RetrieveAPIView):
 
 
 class SpotList(DynamicFieldsViewMixin, ListCreateAPIView):
-
+    """
+    List of spots
+    """
     queryset = Spot.objects.all()
     serializer_class = SpotSerializer
-    filter_backends = (DistanceFilter, )
+    filter_backends = (DistanceFilter, DjangoFilterBackend)
+    filter_class = SpotFilter
     parser_classes = (MultiPartParser, FormParser, FileUploadParser)
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
@@ -154,6 +151,8 @@ class PhotoList(DynamicFieldsViewMixin, ListCreateAPIView):
 class UserFavoriteList(DynamicFieldsViewMixin, ListAPIView):
 
     serializer_class = FavoriteSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = UserFavoriteFilter
 
     def get_queryset(self):
         user = get_object_or_404(User, pk=self.kwargs.get("pk", None))
@@ -224,6 +223,8 @@ class UserSpotList(DynamicFieldsViewMixin, ListAPIView):
 class UserReviewList(DynamicFieldsViewMixin, ListAPIView):
 
     serializer_class = ReviewSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = UserReviewFilter
 
     def get_queryset(self):
         user = get_object_or_404(User, pk=self.kwargs.get("pk", None))

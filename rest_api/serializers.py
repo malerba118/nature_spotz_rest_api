@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
+from django.contrib.gis.geos import GEOSGeometry
+import pyproj
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from rest_api.models import Spot, Tip, Review, Photo, Favorite, ParkingLocation
-
+from rest_api.tools import parse_float_list, METERS_PER_MILE
 
 
 class DynamicFieldsSerializerMixin(object):
@@ -119,6 +121,8 @@ class ParkingLocationSerializer(DynamicFieldsSerializerMixin, GeoFeatureModelSer
             "created_at",
         )
 
+
+
 class SpotSerializer(DynamicFieldsSerializerMixin, GeoFeatureModelSerializer):
 
     tips = TipSerializer(many=True, read_only=True, fields=("tip", "created_at"))
@@ -134,12 +138,20 @@ class SpotSerializer(DynamicFieldsSerializerMixin, GeoFeatureModelSerializer):
 
     parking_locations = ParkingLocationSerializer(many=True, read_only=True)
 
-    # parking_locations = serializers.HyperlinkedRelatedField(
-    #     many=True,
-    #     read_only=True,
-    #     view_name="parking-location-detail",
-    #     lookup_field="pk"
-    # )
+    distance = serializers.SerializerMethodField()
+
+    def get_distance(self, obj):
+
+        curr_loc_str = self.context["request"].QUERY_PARAMS.get("curr_loc", None)
+        curr_loc_lst = parse_float_list(curr_loc_str)
+
+        if len(curr_loc_lst) == 2:
+            geod = pyproj.Geod(ellps='WGS84')
+            angle1,angle2,distance = geod.inv(curr_loc_lst[0], curr_loc_lst[1], obj.location.x[0], obj.location.y[0])
+            return distance/METERS_PER_MILE
+
+        return None
+
 
     class Meta:
         model = Spot
@@ -158,6 +170,7 @@ class SpotSerializer(DynamicFieldsSerializerMixin, GeoFeatureModelSerializer):
             "tips",
             "reviews",
             "parking_locations",
+            "distance",
         )
 
 

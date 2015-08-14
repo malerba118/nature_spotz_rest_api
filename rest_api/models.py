@@ -49,7 +49,7 @@ class Spot(models.Model):
     skill_level = models.SmallIntegerField(choices=SKILL_LEVEL_CHOICES, null=True)
     danger_level = models.SmallIntegerField(choices=DANGER_LEVEL_CHOICES, null=True)
     family_safe = models.NullBooleanField(null=True)
-    location = LineStringField(null=True)
+    location = LineStringField()
     feature_types = models.ManyToManyField(FeatureType, related_name="spots", null=True)
     activity_types = models.ManyToManyField(ActivityType, related_name="spots", null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True, null=True)
@@ -57,9 +57,6 @@ class Spot(models.Model):
 
     def __unicode__(self):
         return self.title
-
-    def getRouteLength(self):
-        return self.location.length
 
 
 
