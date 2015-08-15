@@ -8,13 +8,32 @@ from django.utils import timezone
 
 
 class FeatureType(models.Model):
-    WATERFALL = 1
-    POOL = 2
-    OVERLOOK = 3
+    BEACH = 0
+    HOT_SPRING = 5
+    LAKE = 10
+    MOUNTAIN = 15
+    OTHER = 18
+    OVERLOOK = 20
+    POND = 25
+    POOL = 30
+    RIVER = 35
+    STREAM = 40
+    TRAIL = 45
+    WATERFALL = 50
+
     types = (
-        (WATERFALL, "Waterfall"),
-        (POOL, "Pool"),
+        (BEACH, "Beach"),
+        (HOT_SPRING, "Hot Spring"),
+        (LAKE, "Lake"),
+        (MOUNTAIN, "Mountain"),
         (OVERLOOK, "Overlook"),
+        (POND, "Pond"),
+        (POOL, "Pool"),
+        (RIVER, "River"),
+        (STREAM, "Stream"),
+        (TRAIL, "Trail"),
+        (WATERFALL, "Waterfall"),
+        (OTHER, "Other"),
     )
     name = models.SmallIntegerField(choices=types)
 
@@ -22,13 +41,36 @@ class FeatureType(models.Model):
         return dict(self.types)[self.name]
 
 class ActivityType(models.Model):
-    RUNNING = 1
-    BIKING = 2
-    PICNICKING = 3
+    #Incremented by 5's to allow insertion of new types in the future while retaining alphabetical order
+    BIKING = 0
+    BIRDING = 5
+    BOULDERING = 10
+    CAMPING = 15
+    DAY_TRIPPING = 20
+    FISHING = 25
+    HIKING = 30
+    KAYAKING = 35
+    OTHER = 38
+    PICNICKING = 40
+    RUNNING = 45
+    SPELUNKING = 50
+    SWIMMING = 55
+
+
     types = (
-        (RUNNING, "Running"),
         (BIKING, "Biking"),
+        (BIRDING, "Birding"),
+        (BOULDERING, "Bouldering"),
+        (CAMPING, "Camping"),
+        (DAY_TRIPPING, "Day-tripping"),
+        (FISHING, "Fishing"),
+        (HIKING, "Hiking"),
+        (KAYAKING, "Kayaking"),
         (PICNICKING, "Picnicking"),
+        (RUNNING, "Running"),
+        (SPELUNKING, "Spelunking"),
+        (SWIMMING, "Swimming"),
+        (OTHER, "Other"),
     )
     name = models.SmallIntegerField(choices=types)
 
