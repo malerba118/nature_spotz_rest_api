@@ -11,7 +11,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_api.filters import DistanceFilter, SpotFilter, UserFavoriteFilter, UserReviewFilter
 from rest_api.models import Spot, Tip, Review, Photo, Favorite, ParkingLocation
-from rest_api.permissions import IsOwner
+from rest_api.permissions import IsOwner, IsOwnerOrReadOnly
 from rest_api.serializers import SpotSerializer, TipSerializer, ReviewSerializer, PhotoSerializer, UserSerializer, \
     FavoriteSerializer, ParkingLocationSerializer
 
@@ -75,7 +75,7 @@ class SpotDetail(DynamicFieldsViewMixin, RetrieveUpdateDestroyAPIView):
 class TipDetail(DynamicFieldsViewMixin, RetrieveUpdateDestroyAPIView):
     queryset = Tip.objects.all()
     serializer_class = TipSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
 
@@ -100,7 +100,7 @@ class TipList(DynamicFieldsViewMixin, ListCreateAPIView):
 class ReviewDetail(DynamicFieldsViewMixin, RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
 
@@ -163,6 +163,7 @@ class UserFavoriteList(DynamicFieldsViewMixin, ListAPIView):
 class SpotFavoriteList(DynamicFieldsViewMixin, ListCreateAPIView):
 
     serializer_class = FavoriteSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         spot = get_object_or_404(Spot, pk=self.kwargs.get("pk", None))
@@ -182,7 +183,7 @@ class SpotFavoriteList(DynamicFieldsViewMixin, ListCreateAPIView):
 class FavoriteDetail(DynamicFieldsViewMixin, RetrieveDestroyAPIView):
     queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, IsOwner)
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
 
