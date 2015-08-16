@@ -3,12 +3,16 @@ from django.contrib.gis.measure import D
 import django_filters
 from rest_framework.filters import BaseFilterBackend
 from rest_api.models import Spot, ActivityType, FeatureType, Favorite, Review
-from rest_api.tools import parse_int, parse_float_list, get_curr_loc
+from rest_api.tools import parse_int, parse_float_list
 
 
 class DistanceFilter(BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
+        """
+        Limit queryset to all spots within user specified radius (in miles)
+        from curr_loc.
+        """
 
         radius = parse_int(request.query_params.get("radius", None))
         curr_loc = parse_float_list(request.query_params.get("curr_loc", None))

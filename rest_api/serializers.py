@@ -8,6 +8,11 @@ from rest_api.tools import parse_float_list, METERS_PER_MILE
 
 
 class DynamicFieldsSerializerMixin(object):
+    """
+    Used to add fields argument to serializers at point of instantiation.
+    These are the fields to be returned on a GET request.
+    Fields options include those specified under the serializer's meta class.
+    """
 
     def __init__(self, *args, **kwargs):
         # Don't pass the 'fields' arg up to the superclass

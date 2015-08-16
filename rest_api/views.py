@@ -11,15 +11,19 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_api.filters import DistanceFilter, SpotFilter, UserFavoriteFilter, UserReviewFilter
 from rest_api.models import Spot, Tip, Review, Photo, Favorite, ParkingLocation
-from rest_api.permissions import IsOwner, IsOwnerOrReadOnly
+from rest_api.permissions import IsOwnerOrReadOnly
 from rest_api.serializers import SpotSerializer, TipSerializer, ReviewSerializer, PhotoSerializer, UserSerializer, \
     FavoriteSerializer, ParkingLocationSerializer
 
 
 class DynamicFieldsViewMixin(object):
 
-     def get_serializer(self, *args, **kwargs):
 
+     def get_serializer(self, *args, **kwargs):
+        """
+        Define get_serializer method to include context and fields keywords
+        to support a fields query parameter.
+        """
         serializer_class = self.get_serializer_class()
 
         fields = None
@@ -38,12 +42,19 @@ class DynamicFieldsViewMixin(object):
 
 
 class UserList(DynamicFieldsViewMixin, ListCreateAPIView):
+    """
+    GET: List of all users
+    POST: Create a new user
+    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
 
 class UserDetail(DynamicFieldsViewMixin, RetrieveAPIView):
+    """
+    GET: Get user details
+    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -51,7 +62,8 @@ class UserDetail(DynamicFieldsViewMixin, RetrieveAPIView):
 
 class SpotList(DynamicFieldsViewMixin, ListCreateAPIView):
     """
-    List of spots
+    GET: List of all spots (query param filters supported)
+    POST: Create new spot
     """
     queryset = Spot.objects.all()
     serializer_class = SpotSerializer
@@ -66,6 +78,12 @@ class SpotList(DynamicFieldsViewMixin, ListCreateAPIView):
 
 
 class SpotDetail(DynamicFieldsViewMixin, RetrieveUpdateDestroyAPIView):
+    """
+    GET: Get spot details
+    PATCH: Partially update a spot
+    PUT: Update a spot
+    DELETE: Delete a spot
+    """
     queryset = Spot.objects.all()
     serializer_class = SpotSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
@@ -73,6 +91,12 @@ class SpotDetail(DynamicFieldsViewMixin, RetrieveUpdateDestroyAPIView):
 
 
 class TipDetail(DynamicFieldsViewMixin, RetrieveUpdateDestroyAPIView):
+    """
+    GET: Get tip details
+    PATCH: Partially update a tip
+    PUT: Update a tip
+    DELETE: Delete a tip
+    """
     queryset = Tip.objects.all()
     serializer_class = TipSerializer
     permission_classes = (IsOwnerOrReadOnly,)
@@ -80,7 +104,10 @@ class TipDetail(DynamicFieldsViewMixin, RetrieveUpdateDestroyAPIView):
 
 
 class TipList(DynamicFieldsViewMixin, ListCreateAPIView):
-
+    """
+    GET: Get list of tips on a spot
+    POST: Create new tip on a spot
+    """
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = TipSerializer
 
@@ -98,6 +125,12 @@ class TipList(DynamicFieldsViewMixin, ListCreateAPIView):
 
 
 class ReviewDetail(DynamicFieldsViewMixin, RetrieveUpdateDestroyAPIView):
+    """
+    GET: Get review details
+    PATCH: Partially update a review
+    PUT: Update a review
+    DELETE: Delete a review
+    """
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = (IsOwnerOrReadOnly,)
@@ -106,7 +139,10 @@ class ReviewDetail(DynamicFieldsViewMixin, RetrieveUpdateDestroyAPIView):
 
 
 class ReviewList(DynamicFieldsViewMixin, ListCreateAPIView):
-
+    """
+    GET: Get list of reviews on a spot
+    POST: Create new review on a spot
+    """
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = ReviewSerializer
 
@@ -125,6 +161,10 @@ class ReviewList(DynamicFieldsViewMixin, ListCreateAPIView):
 
 
 class PhotoDetail(DynamicFieldsViewMixin, RetrieveDestroyAPIView):
+    """
+    GET: Get additional photo details
+    DELETE: Delete an additional photo
+    """
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
@@ -132,7 +172,10 @@ class PhotoDetail(DynamicFieldsViewMixin, RetrieveDestroyAPIView):
 
 
 class PhotoList(DynamicFieldsViewMixin, ListCreateAPIView):
-
+    """
+    GET: Get list of additional photos on a spot
+    POST: Add new additional photo to spot
+    """
     serializer_class = PhotoSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
@@ -149,7 +192,9 @@ class PhotoList(DynamicFieldsViewMixin, ListCreateAPIView):
 
 
 class UserFavoriteList(DynamicFieldsViewMixin, ListAPIView):
-
+    """
+    GET: Get list of favorites belonging to a user
+    """
     serializer_class = FavoriteSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_class = UserFavoriteFilter
@@ -161,7 +206,9 @@ class UserFavoriteList(DynamicFieldsViewMixin, ListAPIView):
 
 
 class SpotFavoriteList(DynamicFieldsViewMixin, ListCreateAPIView):
-
+    """
+    GET: Get list of favorites belonging to a spot
+    """
     serializer_class = FavoriteSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
@@ -181,6 +228,10 @@ class SpotFavoriteList(DynamicFieldsViewMixin, ListCreateAPIView):
 
 
 class FavoriteDetail(DynamicFieldsViewMixin, RetrieveDestroyAPIView):
+    """
+    GET: Get favorite details
+    DELETE: Delete a favorite
+    """
     queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
     permission_classes = (IsOwnerOrReadOnly,)
@@ -188,6 +239,12 @@ class FavoriteDetail(DynamicFieldsViewMixin, RetrieveDestroyAPIView):
 
 
 class ParkingLocationDetail(DynamicFieldsViewMixin, RetrieveUpdateDestroyAPIView):
+    """
+    GET: Get parking location details
+    PATCH: Partially update parking location
+    PUT: Update parking location
+    DELETE: Delete a parking location
+    """
     queryset = ParkingLocation.objects.all()
     serializer_class = ParkingLocationSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
@@ -195,7 +252,10 @@ class ParkingLocationDetail(DynamicFieldsViewMixin, RetrieveUpdateDestroyAPIView
 
 
 class ParkingLocationList(DynamicFieldsViewMixin, ListCreateAPIView):
-
+    """
+    GET: Get list of parking locations on a spot
+    POST: Create new parking location on a spot
+    """
     serializer_class = ParkingLocationSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
@@ -212,7 +272,9 @@ class ParkingLocationList(DynamicFieldsViewMixin, ListCreateAPIView):
 
 
 class UserSpotList(DynamicFieldsViewMixin, ListAPIView):
-
+    """
+    GET: Get list of spots created by a specified user
+    """
     serializer_class = SpotSerializer
 
     def get_queryset(self):
@@ -222,7 +284,9 @@ class UserSpotList(DynamicFieldsViewMixin, ListAPIView):
 
 
 class UserReviewList(DynamicFieldsViewMixin, ListAPIView):
-
+    """
+    GET: Get list of reviews written by a specified user
+    """
     serializer_class = ReviewSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_class = UserReviewFilter

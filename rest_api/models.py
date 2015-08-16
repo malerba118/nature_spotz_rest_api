@@ -8,6 +8,7 @@ from django.utils import timezone
 
 
 class FeatureType(models.Model):
+    #Incremented by 5's to allow insertion of new types in the future while retaining alphabetical order
     BEACH = 0
     HOT_SPRING = 5
     LAKE = 10
