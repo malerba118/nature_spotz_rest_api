@@ -24,8 +24,8 @@ class SpotFilter(django_filters.FilterSet):
     max_skill = django_filters.NumberFilter(name="skill_level", lookup_type="lte")
     min_danger = django_filters.NumberFilter(name="danger_level", lookup_type="gte")
     max_danger = django_filters.NumberFilter(name="danger_level", lookup_type="lte")
-    activity_type = django_filters.MultipleChoiceFilter(name="activity_types", choices=ActivityType.types)
-    feature_type = django_filters.MultipleChoiceFilter(name="feature_types", choices=FeatureType.types)
+    activity_type = django_filters.ModelMultipleChoiceFilter(name="activity_types", queryset=ActivityType.objects.all())
+    feature_type = django_filters.ModelMultipleChoiceFilter(name="feature_types", queryset=FeatureType.objects.all())
     family_safe = django_filters.BooleanFilter(name="family_safe")
 
 
