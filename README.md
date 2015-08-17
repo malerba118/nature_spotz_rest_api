@@ -1,6 +1,8 @@
 # nature_spotz_rest_api
 
-A rest api for a nature service that will allow people to create
+###Overview
+
+A rest api for a nature service that will allow people to browse/create
 postings for spots in nature that they feel are worth visiting.
 
 The api has been implemented with the django rest framework and I chose to use a
@@ -15,13 +17,15 @@ You may log in with the following credentials:
     
 Login link: [http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/auth/login/?next=/api/v1/spots/](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/auth/login/?next=/api/v1/spots/)
 
-Documentation:
-[http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/docs/](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/docs/)
+
+###Documentation:
+Documentation provided by swagger: [http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/docs/](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/docs/)
 
 
-Here is some of the planning/preliminary documentation I did:
+Here is some of the planning/preliminary documentation I did (Entity relationship diagram and figuring out resources and endpoints):
 [https://docs.google.com/document/d/1Z6MHEu-rkFO6cNhaoxhaM4CXyqBe9jJ8hmXgzGO7wI4/edit?usp=sharing](https://docs.google.com/document/d/1Z6MHEu-rkFO6cNhaoxhaM4CXyqBe9jJ8hmXgzGO7wI4/edit?usp=sharing)
 
+#####GET Request Examples
 
 When retrieving spots (and other resources) there are many options to fitler by.
 
