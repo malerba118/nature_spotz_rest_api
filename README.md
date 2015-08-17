@@ -12,10 +12,11 @@ geospatial queries.
 I plan to implement an android app and angular web service on top of this api.
 
 You may log in with the following credentials:
+
     username: user1
     password: password
     
-Login link: [http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/auth/login/?next=/api/v1/spots/](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/auth/login/?next=/api/v1/spots/)
+Login endpoint: [http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/auth/login/?next=/api/v1/spots/](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/auth/login/?next=/api/v1/spots/)
 
 
 ###Documentation:
@@ -27,19 +28,22 @@ Here is some of the planning/preliminary documentation I did (Entity relationshi
 
 #####GET Request Examples
 
-When retrieving spots (and other resources) there are many options to fitler by.
+When retrieving spots (and other resources) there are many options to filter by.
 
 A "fields" query parameter can be used on any GET request and will return only the specified fields:
-[http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?fields=title,description,location](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?fields=title,description,location)
+[.../api/v1/spots/?fields=title,description,location](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?fields=title,description,location)
 
 "page" and "page_size" query parameters allow the user to specify the size of a result set and which page of results to view.
-[http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?page=1&page_size=1](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?page=1&page_size=1)
+[.../api/v1/spots/?page=1&page_size=1](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?page=1&page_size=1)
+
+A "format" query paramater allows users to retrieve the results in different formats:
+[.../api/v1/spots/?format=json](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?format=json)
 
 "curr_loc" and "radius" query parameters allow the user to search for spots within a given radius(miles):
-[http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?curr_loc=42,-74&radius=15](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?curr_loc=42,-74&radius=15)
+[.../api/v1/spots/?curr_loc=42,-74&radius=15](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?curr_loc=42,-74&radius=15)
 
 "feature_type" and "activity_type" query parameters can be used multiple times in a url and return all spots matching any of the types listed:
-[http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?activity_type=7&feature_type=11&feature_type=10](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?activity_type=7&feature_type=11&feature_type=10)
+[.../api/v1/spots/?activity_type=7&feature_type=11&feature_type=10](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?activity_type=7&feature_type=11&feature_type=10)
 
 See [documentation](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/docs/) for more details.
 
