@@ -22,8 +22,7 @@ SECRET_KEY = 'gd4jv&6e(ba(mrrr!2my!)4kr6_!i7%#a=xjctk!!oajg^7i+8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-PRODUCTION_SERVER = socket.gethostname() == "ip-172.31.19.202"
-
+PRODUCTION_SERVER = socket.gethostname() == "ip-172-31-19-202"
 
 
 # Application definition
@@ -40,10 +39,12 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework_gis',
     'rest_framework_swagger',
+    'corsheaders',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -51,6 +52,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'nature_spotz.urls'
 

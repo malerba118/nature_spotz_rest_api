@@ -17,5 +17,5 @@ urlpatterns = patterns('',
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-if not settings.PRODUCTION_SERVER:
+if settings.PRODUCTION_SERVER==False:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
