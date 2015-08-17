@@ -9,10 +9,17 @@ geospatial queries.
 
 I plan to implement an android app and angular web service on top of this api.
 
-Try out the api here:
+You may log in with the following credentials:
+    username: user1
+    password: password
+    
+Login link: [http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/auth/login/?next=/api/v1/spots/](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/auth/login/?next=/api/v1/spots/)
+
+Documentation:
 [http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/docs/](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/docs/)
 
-Here is some of the planning/preliminary documentation:
+
+Here is some of the planning/preliminary documentation I did:
 [https://docs.google.com/document/d/1Z6MHEu-rkFO6cNhaoxhaM4CXyqBe9jJ8hmXgzGO7wI4/edit?usp=sharing](https://docs.google.com/document/d/1Z6MHEu-rkFO6cNhaoxhaM4CXyqBe9jJ8hmXgzGO7wI4/edit?usp=sharing)
 
 
