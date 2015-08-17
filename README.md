@@ -28,9 +28,8 @@ A "fields" query parameter can be used on any GET request and will return only t
 [http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?curr_loc=42,-74&radius=15](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?curr_loc=42,-74&radius=15)
 
 "feature_type" and "activity_type" query parameters can be used multiple times in a url and return all spots matching any of the types listed:
-
 [http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?activity_type=7&feature_type=11&feature_type=10](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/spots/?activity_type=7&feature_type=11&feature_type=10)
 
-See [docuentation](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/docs/) for more details.
+See [documentation](http://ec2-52-11-184-39.us-west-2.compute.amazonaws.com/api/v1/docs/) for more details.
 
 
