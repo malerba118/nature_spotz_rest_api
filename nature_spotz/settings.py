@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import socket
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -20,11 +21,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'gd4jv&6e(ba(mrrr!2my!)4kr6_!i7%#a=xjctk!!oajg^7i+8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-TEMPLATE_DEBUG = True
+PRODUCTION_SERVER = socket.gethostname() == "ip-172.31.19.202"
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -61,16 +60,41 @@ WSGI_APPLICATION = 'nature_spotz.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'nsdb2',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        'PORT': '5432',
+if PRODUCTION_SERVER:
+
+    DEBUG = False
+    TEMPLATE_DEBUG = False
+
+    ALLOWED_HOSTS = ["*",]
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': 'nature_spotz_db',
+            'USER': 'malerba118',
+            'PASSWORD': 'barbier118',
+            'HOST': 'nature-spotz-db.c3spk20myn8l.us-west-2.rds.amazonaws.com',
+            'PORT': '5432',
+        }
     }
-}
+
+else:
+
+    DEBUG = True
+    TEMPLATE_DEBUG = True
+
+    ALLOWED_HOSTS = []
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': 'nsdb2',
+            'USER': 'admin',
+            'PASSWORD': 'admin',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -98,10 +122,17 @@ REST_FRAMEWORK = {
 }
 
 
-STATIC_URL = "/static/"
-MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static", "static-only")
-MEDIA_ROOT = os.path.join(BASE_DIR, "static", "media")
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static", "static"),
-)
+if PRODUCTION_SERVER:
+    STATIC_URL = "/static/"
+    STATIC_ROOT = os.path.join(os.path.join(BASE_DIR, 'static'), "static")
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'static'), "media")
+
+else:
+    STATIC_URL = "/static/"
+    MEDIA_URL = '/media/'
+    STATIC_ROOT = os.path.join(BASE_DIR, "static", "static-only")
+    MEDIA_ROOT = os.path.join(BASE_DIR, "static", "media")
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, "static", "static"),
+    )
